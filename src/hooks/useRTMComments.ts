@@ -14,6 +14,7 @@ export function useRTMComments(
 ) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [viewerCount, setViewerCount] = useState<number>(0);
   const clientRef = useRef<RtmClient | null>(null);
   const channelRef = useRef<RtmChannel | null>(null);
   const userIdRef = useRef<string>(
@@ -65,8 +66,26 @@ export function useRTMComments(
           }
         });
 
+        // Handle member count updates
+        channel.on('MemberCountUpdated', (memberCount) => {
+          if (mounted) {
+            setViewerCount(memberCount);
+          }
+        });
+
         // Join channel
         await channel.join();
+
+        // Get initial member count
+        try {
+          const members = await channel.getMembers();
+          if (mounted) {
+            setViewerCount(members.length);
+          }
+        } catch (error) {
+          console.error('Failed to get initial member count:', error);
+        }
+
         if (mounted) {
           setIsConnected(true);
         }
@@ -139,5 +158,6 @@ export function useRTMComments(
     sendComment,
     isConnected,
     userId: userIdRef.current,
+    viewerCount,
   };
 }

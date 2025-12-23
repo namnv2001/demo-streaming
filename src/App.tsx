@@ -54,6 +54,7 @@ function App() {
     comments,
     sendComment,
     isConnected: isRTMConnected,
+    viewerCount,
   } = useRTMComments(appId, defaultChannel, isConnected && shouldJoin);
 
   return (
@@ -84,10 +85,23 @@ function App() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 12,
+            gap: 16,
             fontSize: 13,
           }}
         >
+          {isRTMConnected && viewerCount > 0 && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                color: '#fff',
+              }}
+            >
+              <span style={{ fontWeight: 600 }}>Viewers:</span>
+              <span style={{ color: '#4caf50' }}>{viewerCount}</span>
+            </div>
+          )}
           <div
             style={{
               display: 'flex',
