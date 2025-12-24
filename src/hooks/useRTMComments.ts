@@ -11,6 +11,7 @@ export function useRTMComments(
   appId: string | undefined,
   channelName: string,
   enabled: boolean,
+  token: string | null = null,
 ) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -35,8 +36,15 @@ export function useRTMComments(
         const client = AgoraRTM.createInstance(appId);
         clientRef.current = client;
 
-        // Login
-        await client.login({ uid: userIdRef.current });
+        // Login - RTM requires a token when dynamic keys are enabled
+        // Note: RTM tokens are different from RTC tokens
+        const loginParams: { uid: string; token?: string } = {
+          uid: userIdRef.current,
+        };
+        if (token) {
+          loginParams.token = token;
+        }
+        await client.login(loginParams);
 
         // Create and join channel
         const channel = client.createChannel(channelName);
@@ -117,7 +125,7 @@ export function useRTMComments(
       };
       cleanup();
     };
-  }, [enabled, appId, channelName]);
+  }, [enabled, appId, channelName, token]);
 
   // Send comment
   const sendComment = useCallback(
