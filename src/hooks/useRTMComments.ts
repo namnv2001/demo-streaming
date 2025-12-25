@@ -11,7 +11,6 @@ export function useRTMComments(
   appId: string | undefined,
   channelName: string,
   enabled: boolean,
-  token: string | null = null,
 ) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -21,6 +20,7 @@ export function useRTMComments(
   const userIdRef = useRef<string>(
     `viewer_${Math.random().toString(36).substring(2, 9)}`,
   );
+  const token = import.meta.env.VITE_AGORA_RTM_TOKEN ?? '';
 
   // Initialize RTM client and channel
   useEffect(() => {
