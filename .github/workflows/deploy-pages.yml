@@ -33,6 +33,10 @@ jobs:
 
       - name: Build project
         run: yarn build
+        env:
+          VITE_AGORA_APPID: ${{ secrets.AGORA_APPID }}
+          VITE_AGORA_CHANNEL: ${{ secrets.AGORA_CHANNEL }}
+          VITE_AGORA_TOKEN: ${{ secrets.AGORA_TOKEN }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -49,5 +53,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-
